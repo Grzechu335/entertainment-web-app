@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import { useMovies } from "~/store/movies";
+import { debounceTime } from "~/constants/constants";
 const moviesStore = useMovies();
 moviesStore.fetchTrendingMovies();
 
@@ -33,7 +34,7 @@ let input = ref("");
 
 const searchAllByInput = useDebounce(() => {
 	moviesStore.searchAll(input.value);
-}, 500);
+}, debounceTime);
 
 watch(input, () => {
 	searchAllByInput();

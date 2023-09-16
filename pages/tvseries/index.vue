@@ -10,13 +10,15 @@
 
 <script setup lang="ts">
 import { useMovies } from "~/store/movies";
+import { debounceTime } from "~/constants/constants";
+
 let input = ref("");
 const moviesStore = useMovies();
 moviesStore.fetchTVSeries();
 
 const searchTVSeriesByInput = useDebounce(() => {
 	moviesStore.searchTVSeries(input.value);
-}, 500);
+}, debounceTime);
 
 watch(input, () => {
 	searchTVSeriesByInput();
