@@ -1,6 +1,11 @@
 <template>
 	<div class="relative flex flex-col flex-shrink-0 space-y-2 group">
 		<div class="relative overflow-hidden rounded-lg group">
+			<div
+				class="absolute top-0 left-0 p-2 !font-bold text-white rounded-br-lg bg-[#E50914] heading-xs"
+			>
+				<span>{{ movie.vote_average.toFixed(1) }}</span>
+			</div>
 			<SvgoFavoritesIcon
 				:fontControlled="false"
 				class="absolute w-[32px] h-[32px] top-4 right-6 cursor-pointer hover:fill-white z-10"

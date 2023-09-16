@@ -7,6 +7,11 @@
 			:src="`https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`"
 		/>
 		<div
+			class="absolute top-0 left-0 p-2 !font-bold text-white rounded-br-lg bg-[#E50914] heading-xs"
+		>
+			<span>{{ movie.vote_average.toFixed(1) }}</span>
+		</div>
+		<div
 			class="flex flex-col justify-end w-full h-full p-4 tablet:p-6 bg-gradient-to-b from-dark-blue/20 to-dark-blue/70"
 		>
 			<div
