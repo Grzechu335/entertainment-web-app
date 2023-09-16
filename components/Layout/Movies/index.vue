@@ -10,10 +10,16 @@
 </template>
 
 <script setup lang="ts">
-import type { Movie, TVShow } from "~/types/Movie";
+import type {
+	CommonMovie,
+	Movie,
+	SearchedMovie,
+	SearchedTVShow,
+	TVShow,
+} from "~/types/Movie";
 
 defineProps<{
-	movies: Array<Movie | TVShow> | null;
+	movies: Array<Movie | TVShow> | Array<SearchedMovie | SearchedTVShow> | null;
 	header: string;
 }>();
 </script>

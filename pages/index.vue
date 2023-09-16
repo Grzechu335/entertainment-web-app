@@ -16,7 +16,9 @@
 			</div>
 			<LayoutMovies
 				header="Recommended for you"
-				:movies="moviesStore.getRecommended"
+				:movies="
+					input === '' ? moviesStore.getRecommended : moviesStore.getSearchedAll
+				"
 			/>
 		</div>
 	</div>
@@ -24,8 +26,16 @@
 
 <script setup lang="ts">
 import { useMovies } from "~/store/movies";
-let input = ref("");
-
 const moviesStore = useMovies();
 moviesStore.fetchTrendingMovies();
+
+let input = ref("");
+
+const searchAllByInput = useDebounce(() => {
+	moviesStore.searchAll(input.value);
+}, 500);
+
+watch(input, () => {
+	searchAllByInput();
+});
 </script>

@@ -10,6 +10,7 @@ export default defineNuxtConfig({
 		"@nuxt/image",
 		"nuxt-icons",
 		"nuxt-svgo",
+		"nuxt-lodash",
 	],
 	googleFonts: {
 		families: {

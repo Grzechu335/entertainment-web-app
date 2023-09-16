@@ -1,7 +1,8 @@
 <template>
-	<div class="relative flex flex-col flex-shrink-0 space-y-2 group">
-		<div class="relative overflow-hidden rounded-lg group">
+	<div class="flex flex-col justify-end flex-shrink-0 space-y-2 group">
+		<div class="relative w-full h-full overflow-hidden rounded-lg group">
 			<div
+				v-if="movie.vote_average"
 				class="absolute top-0 left-0 p-2 !font-bold text-white rounded-br-lg bg-[#E50914] heading-xs"
 			>
 				<span>{{ movie.vote_average.toFixed(1) }}</span>
@@ -12,9 +13,13 @@
 				filled
 			/>
 			<NuxtImg
+				v-if="movie.backdrop_path"
 				class="object-cover w-full h-full rounded-lg -z-10"
 				:src="`https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`"
 			/>
+			<div v-else class="grid w-full h-full place-content-center">
+				<NuxtImg class="mx-auto my-auto rounded-lg -z-10" src="/noImage.png" />
+			</div>
 			<div
 				class="absolute top-0 left-0 grid w-full h-full transition-opacity duration-200 opacity-0 place-content-center group-hover:opacity-100 bg-dark-blue/60"
 			>
@@ -30,34 +35,37 @@
 			<p
 				class="inline-flex items-center space-x-[1px] tablet:space-x-1 body-sm text-white/75"
 			>
-				<span>{{
-					movie.media_type === "movie"
-						? movie.release_date
-						: movie.first_air_date
-				}}</span>
+				<span>{{ movieDate }}</span>
 				<Icon name="bi:dot" color="#ffffff75" size="20" />
 				<SvgoMovieIcon
 					class="w-[12px] h-[12px]"
-					v-if="movie.media_type === 'movie'"
+					v-if="'title' in movie"
 					:fontControlled="false"
 				/>
 				<SvgoTVIcon class="w-[12px] h-[12px]" v-else :fontControlled="false" />
-				<span v-if="movie.media_type === 'movie'">Movie</span>
+				<span v-if="'title' in movie">Movie</span>
 				<span v-else>TV <span class="hidden desktop:inline">Series</span></span>
 				<Icon name="bi:dot" color="#ffffff75" size="20" />
 				<span>{{ movie.adult ? "18+" : "PG" }}</span>
 			</p>
 			<p class="truncate heading-xs">
-				{{ movie.media_type === "movie" ? movie.title : movie.name }}
+				{{ "title" in movie ? movie.title : movie.name }}
 			</p>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { Movie, TVShow } from "~/types/Movie";
+import { Movie, SearchedMovie, SearchedTVShow, TVShow } from "~/types/Movie";
 
-defineProps<{
-	movie: Movie | TVShow;
+const movieDate = computed(() => {
+	let movieDate = "title" in props.movie && props.movie.release_date;
+	let tvShowDate = "name" in props.movie && props.movie.first_air_date;
+	if (isNaN(Number(movieDate)) || isNaN(Number(tvShowDate))) return "Unknown";
+	if (movieDate) return movieDate;
+	else return tvShowDate;
+});
+const props = defineProps<{
+	movie: Movie | TVShow | SearchedMovie | SearchedTVShow;
 }>();
 </script>
