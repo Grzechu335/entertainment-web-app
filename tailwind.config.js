@@ -8,6 +8,10 @@ export default {
 		"./nuxt.config.{js,ts}",
 	],
 	theme: {
+		screens: {
+			tablet: "620px",
+			desktop: "1000px",
+		},
 		colors: {
 			red: "#FC4747",
 			"dark-blue": "#10141E",

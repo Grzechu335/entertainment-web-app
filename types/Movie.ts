@@ -1,24 +1,46 @@
-export interface TopMovies {
+export type CommonRes = {
+	page: number;
+	results: Array<Movie | TVShow>;
+	total_pages: number;
+	total_results: number;
+};
+
+export type MoviesRes = {
 	page: number;
 	results: Array<Movie>;
 	total_pages: number;
 	total_results: number;
-}
+};
 
-export interface Movie {
+export type TVSeriesRes = {
+	page: number;
+	results: Array<TVShow>;
+	total_pages: number;
+	total_results: number;
+};
+
+type CommonMovieData = {
 	adult: boolean;
 	backdrop_path: string;
-	genre_ids: Array<number>;
+	genre_ids: number[];
 	id: number;
-	media_type: "movie" | "tv";
 	original_language: string;
 	original_title: string;
 	overview: string;
 	popularity: number;
 	poster_path: string;
-	release_date: string;
-	title: string;
 	video: boolean;
 	vote_average: number;
 	vote_count: number;
-}
+};
+
+export type Movie = CommonMovieData & {
+	media_type: "movie";
+	title: string;
+	release_date: string;
+};
+export type TVShow = CommonMovieData & {
+	media_type: "tv";
+	name: string;
+	first_air_date: string;
+};

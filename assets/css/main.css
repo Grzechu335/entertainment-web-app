@@ -10,22 +10,22 @@
 
 @layer utilities {
 	.heading-lg {
-		@apply text-[32px] text-white font-light tracking-[-0.5px];
+		@apply text-[20px] tablet:text-[32px] text-white font-light tracking-[-0.321px] tablet:tracking-[-0.5px];
 	}
 	.heading-md {
 		@apply text-[24px] text-white font-light;
 	}
 	.heading-sm {
-		@apply text-[24px] text-white font-medium;
+		@apply text-[15px] tablet:text-[24px] text-white font-medium;
 	}
 	.heading-xs {
-		@apply text-[18px] text-white font-medium;
+		@apply text-[14px] tablet:text-[18px] text-white font-medium;
 	}
 	.body-md {
 		@apply text-[15px] text-white font-light;
 	}
 	.body-sm {
-		@apply text-[13px] text-white font-light text-opacity-75;
+		@apply text-[12px] tablet:text-[13px] text-white font-light text-opacity-75;
 	}
 	.bg-transparent {
 		background-color: transparent;
