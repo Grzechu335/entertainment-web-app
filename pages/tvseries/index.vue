@@ -1,23 +1,30 @@
 <template>
-	<LayoutSearchBar placeholder="Search for TV Series" v-model="input" />
-	<LayoutMovies
-		header="TV Series"
-		:movies="
-			input === '' ? moviesStore.getTVSeries : moviesStore.getSearchedTVSeries
-		"
-	/>
+	<div>
+		<LayoutSearchBar placeholder="Search for TV Series" v-model="input" />
+		<LayoutMovies
+			:is-loading="tvSeriesStore.searchedTVSeries.isLoading"
+			:input-length="input.length"
+			:not-found="tvSeriesStore.searchedTVSeries.notFound"
+			header="TV Series"
+			:movies="
+				input === ''
+					? tvSeriesStore.getTVSeries.data
+					: tvSeriesStore.getSearchedTVSeries.data
+			"
+		/>
+	</div>
 </template>
 
 <script setup lang="ts">
-import { useMovies } from "~/store/movies";
 import { debounceTime } from "~/constants/constants";
+import { useTVSeries } from "~/store/tvSeries";
 
 let input = ref("");
-const moviesStore = useMovies();
-moviesStore.fetchTVSeries();
+const tvSeriesStore = useTVSeries();
+tvSeriesStore.fetchTVSeries();
 
 const searchTVSeriesByInput = useDebounce(() => {
-	moviesStore.searchTVSeries(input.value);
+	tvSeriesStore.searchTVSeries(input.value);
 }, debounceTime);
 
 watch(input, () => {

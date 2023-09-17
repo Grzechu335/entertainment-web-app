@@ -61,9 +61,8 @@ import { Movie, SearchedMovie, SearchedTVShow, TVShow } from "~/types/Movie";
 const movieDate = computed(() => {
 	let movieDate = "title" in props.movie && props.movie.release_date;
 	let tvShowDate = "name" in props.movie && props.movie.first_air_date;
-	if (isNaN(Number(movieDate)) || isNaN(Number(tvShowDate))) return "Unknown";
-	if (movieDate) return movieDate;
-	else return tvShowDate;
+	if (movieDate) return new Date(movieDate).getFullYear();
+	if (tvShowDate) return new Date(tvShowDate).getFullYear();
 });
 const props = defineProps<{
 	movie: Movie | TVShow | SearchedMovie | SearchedTVShow;

@@ -48,10 +48,10 @@ export type TVShow = CommonMovie & {
 
 export type SearchedMovie = CommonMovie & {
 	title: string;
-	release_date: string | typeof NaN;
+	release_date: string;
 };
 
 export type SearchedTVShow = CommonMovie & {
 	name: string;
-	first_air_date: string | typeof NaN;
+	first_air_date: string;
 };

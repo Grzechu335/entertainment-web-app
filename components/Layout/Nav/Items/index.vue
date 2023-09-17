@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="flex flex-row items-center space-y-0 space-x-7 desktop:space-x-0 desktop:space-y-10 desktop:flex-col desktop:mt-[75px]"
+		class="flex flex-row items-center space-y-0 space-x-5 tablet:space-x-7 desktop:space-x-0 desktop:space-y-10 desktop:flex-col desktop:mt-[75px]"
 	>
 		<NuxtLink to="/"
 			><SvgoTrendingIcon

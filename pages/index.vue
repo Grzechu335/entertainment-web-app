@@ -5,19 +5,31 @@
 			v-model="input"
 		/>
 		<div class="flex flex-col space-y-10">
-			<div class="-mr-6 space-y-6">
+			<div class="space-y-6">
 				<h1 class="heading-lg">Trending</h1>
-				<div class="flex pr-6 space-x-6 overflow-x-scroll scrollbar-none">
+				<VueMarquee
+					:gradient="true"
+					gradient-length="20%"
+					:gradient-color="[16, 20, 30]"
+					pauseOnHover
+					:duration="60"
+				>
 					<MovieTrending
+						:key="movie.id"
 						:movie="movie"
-						v-for="movie in moviesStore.getTrending"
+						v-for="movie in moviesStore.getTrendingMovies.data"
 					/>
-				</div>
+				</VueMarquee>
 			</div>
 			<LayoutMovies
+				:input-length="input.length"
+				:is-loading="moviesStore.getSearchedRecommendedMovies.isLoading"
+				:not-found="moviesStore.getSearchedRecommendedMovies.noMoviesFound"
 				header="Recommended for you"
 				:movies="
-					input === '' ? moviesStore.getRecommended : moviesStore.getSearchedAll
+					input === ''
+						? moviesStore.getRecommendedMovies.data
+						: moviesStore.getSearchedRecommendedMovies.data
 				"
 			/>
 		</div>
@@ -25,18 +37,18 @@
 </template>
 
 <script setup lang="ts">
-import { useMovies } from "~/store/movies";
 import { debounceTime } from "~/constants/constants";
-const moviesStore = useMovies();
-moviesStore.fetchTrendingMovies();
+import { useHomeMovies } from "~/store/homeMovies";
+const moviesStore = useHomeMovies();
+moviesStore.fetchHomeMovies();
 
 let input = ref("");
 
-const searchAllByInput = useDebounce(() => {
-	moviesStore.searchAll(input.value);
+const searchRecommendedByInput = useDebounce(() => {
+	moviesStore.searchRecommendedMovies(input.value);
 }, debounceTime);
 
 watch(input, () => {
-	searchAllByInput();
+	searchRecommendedByInput();
 });
 </script>

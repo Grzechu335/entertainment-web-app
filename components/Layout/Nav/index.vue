@@ -1,7 +1,7 @@
 import { LayoutNavItems } from '#build/components';
 <template>
 	<aside
-		class="absolute top-0 left-0 w-full p-6 desktop:fixed desktop:w-auto desktop:h-full desktop:p-8"
+		class="absolute top-0 left-0 w-full p-6 desktop:fixed desktop:w-auto desktop:h-full desktop:p-8 z-[999]"
 	>
 		<div
 			class="flex flex-row p-6 desktop:h-full bg-semi-dark-blue rounded-xl desktop:flex-col desktop:p-8"

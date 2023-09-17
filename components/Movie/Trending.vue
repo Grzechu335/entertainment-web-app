@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="relative group w-[240px] tablet:w-[470px] h-[140px] tablet:h-[230px] flex-shrink-0 rounded-lg overflow-hidden"
+		class="relative group w-[240px] tablet:w-[470px] h-[140px] tablet:h-[230px] flex-shrink-0 rounded-lg overflow-hidden mx-6"
 	>
 		<NuxtImg
 			class="absolute object-cover w-full h-full -z-10"

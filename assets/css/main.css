@@ -4,7 +4,7 @@
 
 @layer base {
 	body {
-		@apply font-sans bg-dark-blue;
+		@apply overflow-x-hidden font-sans bg-dark-blue;
 	}
 }
 
@@ -13,7 +13,7 @@
 		@apply text-[20px] tablet:text-[32px] text-white font-light tracking-[-0.321px] tablet:tracking-[-0.5px];
 	}
 	.heading-md {
-		@apply text-[24px] text-white font-light;
+		@apply text-[16px] tablet:text-[24px] text-white font-light;
 	}
 	.heading-sm {
 		@apply text-[15px] tablet:text-[24px] text-white font-medium;

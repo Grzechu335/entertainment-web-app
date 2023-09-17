@@ -1,1 +1,1 @@
-export const debounceTime: number = 1000;
+export const debounceTime: number = 500;
