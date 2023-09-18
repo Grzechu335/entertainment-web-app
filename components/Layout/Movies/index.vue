@@ -7,7 +7,7 @@
 			</div>
 			<div
 				v-else
-				class="grid gap-4 tablet:gap-7 desktop:gap-10 tablet:grid-cols-3 desktop:grid-cols-4"
+				class="grid grid-flow-row grid-cols-1 gap-4 tablet:gap-7 desktop:gap-10 tablet:grid-cols-3 desktop:grid-cols-4"
 			>
 				<Movie :movie="movie" v-for="movie in movies" />
 			</div>
