@@ -3,14 +3,9 @@
 		<LayoutSearchBar placeholder="Search for TV Series" v-model="input" />
 		<LayoutMovies
 			:is-loading="tvSeriesStore.searchedTVSeries.isLoading"
-			:input-length="input.length"
-			:not-found="tvSeriesStore.searchedTVSeries.notFound"
 			header="TV Series"
-			:movies="
-				input === ''
-					? tvSeriesStore.getTVSeries.data
-					: tvSeriesStore.getSearchedTVSeries.data
-			"
+			:movies="tvSeriesStore.getTVSeries.data"
+			:searched-movies="tvSeriesStore.getSearchedTVSeries.data"
 		/>
 	</div>
 </template>

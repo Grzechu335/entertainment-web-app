@@ -10,7 +10,6 @@ export const useTVSeries = defineStore("tvSeries", {
 		searchedTVSeries: {
 			data: null as SearchedTVShow[] | null,
 			isLoading: false,
-			notFound: false,
 		},
 	}),
 	getters: {
@@ -43,11 +42,13 @@ export const useTVSeries = defineStore("tvSeries", {
 			}
 		},
 		async searchTVSeries(query: string) {
-			if (query.trim() === "") return;
+			if (query.trim() === "") {
+				this.searchedTVSeries.data = null;
+				return;
+			}
 			const config = useRuntimeConfig();
 			const searchTVSeriesUrl = "https://api.themoviedb.org/3/search/multi";
 			try {
-				this.searchedTVSeries.notFound = false;
 				this.searchedTVSeries.isLoading = true;
 				const res = await $fetch<TVSeriesRes>(searchTVSeriesUrl, {
 					method: "GET",
@@ -63,7 +64,7 @@ export const useTVSeries = defineStore("tvSeries", {
 					},
 				});
 				if (res.total_results === 0) {
-					this.searchedTVSeries.notFound = true;
+					this.searchedTVSeries.data = [];
 				} else {
 					this.searchedTVSeries.data = res.results;
 				}

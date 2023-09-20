@@ -1,18 +1,43 @@
 <template>
-	<div class="space-y-6">
-		<h1 class="heading-lg">{{ header }}</h1>
-		<div v-if="!isLoading">
-			<div v-if="notFound && inputLength !== 0">
+	<div class="relative space-y-6 min-h-[400px]">
+		<Transition>
+			<h1 class="relative heading-lg">
+				&#8205;
+				<Transition name="movieLayout">
+					<span class="absolute" v-if="searchedMovies === null">{{
+						header
+					}}</span>
+					<span class="absolute" v-else>Searched</span>
+				</Transition>
+			</h1>
+		</Transition>
+		<Transition name="movieLayout" mode="out-in">
+			<div
+				v-if="isLoading"
+				class="absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]"
+			>
+				<Spinner />
+			</div>
+			<div v-else-if="searchedMovies === null">
+				<div
+					class="grid grid-flow-row grid-cols-1 gap-4 tablet:gap-7 desktop:gap-10 tablet:grid-cols-3 desktop:grid-cols-4"
+				>
+					<Movie :movie="movie" v-for="movie in movies" />
+				</div>
+			</div>
+			<div
+				v-else-if="searchedMovies?.length === 0"
+				class="absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]"
+			>
 				<p class="text-4xl font-bold text-white">Not found</p>
 			</div>
 			<div
 				v-else
 				class="grid grid-flow-row grid-cols-1 gap-4 tablet:gap-7 desktop:gap-10 tablet:grid-cols-3 desktop:grid-cols-4"
 			>
-				<Movie :movie="movie" v-for="movie in movies" />
+				<Movie :movie="movie" v-for="movie in searchedMovies" />
 			</div>
-		</div>
-		<Spinner v-else />
+		</Transition>
 	</div>
 </template>
 
@@ -25,10 +50,21 @@ import type {
 } from "~/types/Movie";
 
 defineProps<{
-	movies: Array<Movie | TVShow> | Array<SearchedMovie | SearchedTVShow> | null;
+	movies: Array<Movie | TVShow> | null;
+	searchedMovies: Array<SearchedMovie | SearchedTVShow> | null;
 	header: string;
 	isLoading: boolean;
-	notFound: boolean;
-	inputLength: number;
 }>();
 </script>
+
+<style scoped>
+.movieLayout-enter-active,
+.movieLayout-leave-active {
+	transition: opacity 0.2s ease-in-out;
+}
+
+.movieLayout-enter-from,
+.movieLayout-leave-to {
+	opacity: 0;
+}
+</style>

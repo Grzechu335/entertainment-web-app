@@ -22,15 +22,10 @@
 				</VueMarquee>
 			</div>
 			<LayoutMovies
-				:input-length="input.length"
-				:is-loading="moviesStore.getSearchedRecommendedMovies.isLoading"
-				:not-found="moviesStore.getSearchedRecommendedMovies.noMoviesFound"
 				header="Recommended for you"
-				:movies="
-					input === ''
-						? moviesStore.getRecommendedMovies.data
-						: moviesStore.getSearchedRecommendedMovies.data
-				"
+				:is-loading="moviesStore.getSearchedRecommendedMovies.isLoading"
+				:movies="moviesStore.getRecommendedMovies.data"
+				:searchedMovies="moviesStore.getSearchedRecommendedMovies.data"
 			/>
 		</div>
 	</div>
@@ -44,7 +39,7 @@ moviesStore.fetchHomeMovies();
 
 let input = ref("");
 
-const searchRecommendedByInput = useDebounce(() => {
+const searchRecommendedByInput: () => Promise<any> = useDebounce(() => {
 	moviesStore.searchRecommendedMovies(input.value);
 }, debounceTime);
 

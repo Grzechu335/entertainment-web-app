@@ -14,7 +14,6 @@ export const useHomeMovies = defineStore("homeMovies", {
 		searchedRecommendedMovies: {
 			data: null as Array<Movie | TVShow> | null,
 			isLoading: false,
-			noMoviesFound: false,
 		},
 	}),
 	getters: {
@@ -34,7 +33,6 @@ export const useHomeMovies = defineStore("homeMovies", {
 						accept: "application/json",
 					},
 					params: {
-						adult: true,
 						api_key: config.public.movieDbKey,
 						language: "en-US",
 						page: 1,
@@ -50,11 +48,13 @@ export const useHomeMovies = defineStore("homeMovies", {
 			}
 		},
 		async searchRecommendedMovies(query: string) {
-			if (query.trim() === "") return;
+			if (query.trim() === "") {
+				this.searchedRecommendedMovies.data = null;
+				return;
+			}
 			const config = useRuntimeConfig();
 			const searchRecommendedUrl = "https://api.themoviedb.org/3/search/multi";
 			try {
-				this.searchedRecommendedMovies.noMoviesFound = false;
 				this.searchedRecommendedMovies.isLoading = true;
 				const res = await $fetch<CommonRes>(searchRecommendedUrl, {
 					method: "GET",
@@ -62,7 +62,6 @@ export const useHomeMovies = defineStore("homeMovies", {
 						accept: "application/json",
 					},
 					params: {
-						include_adult: true,
 						api_key: config.public.movieDbKey,
 						language: "en-US",
 						page: 1,
@@ -70,7 +69,7 @@ export const useHomeMovies = defineStore("homeMovies", {
 					},
 				});
 				if (res.total_results === 0) {
-					this.searchedRecommendedMovies.noMoviesFound = true;
+					this.searchedRecommendedMovies.data = [];
 				} else {
 					this.searchedRecommendedMovies.data = res.results;
 				}

@@ -10,7 +10,6 @@ export const useMovies = defineStore("movies", {
 		searchedMovies: {
 			data: null as SearchedMovie[] | null,
 			isLoading: false,
-			notFound: false,
 		},
 	}),
 	getters: {
@@ -43,11 +42,13 @@ export const useMovies = defineStore("movies", {
 			}
 		},
 		async searchMovies(query: string) {
-			if (query.trim() === "") return;
+			if (query.trim() === "") {
+				this.searchedMovies.data = null;
+				return;
+			}
 			const config = useRuntimeConfig();
 			const searchMoviesUrl = "https://api.themoviedb.org/3/search/movie";
 			try {
-				this.searchedMovies.notFound = false;
 				this.searchedMovies.isLoading = true;
 				const res = await $fetch<MoviesRes>(searchMoviesUrl, {
 					method: "GET",
@@ -63,7 +64,7 @@ export const useMovies = defineStore("movies", {
 					},
 				});
 				if (res.total_results === 0) {
-					this.searchedMovies.notFound = true;
+					this.searchedMovies.data = [];
 				} else {
 					this.searchedMovies.data = res.results;
 				}
