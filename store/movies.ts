@@ -28,7 +28,6 @@ export const useMovies = defineStore("movies", {
 						accept: "application/json",
 					},
 					params: {
-						adult: true,
 						api_key: config.public.movieDbKey,
 						language: "en-US",
 						page: 1,
@@ -56,7 +55,6 @@ export const useMovies = defineStore("movies", {
 						accept: "application/json",
 					},
 					params: {
-						include_adult: true,
 						api_key: config.public.movieDbKey,
 						language: "en-US",
 						page: 1,
