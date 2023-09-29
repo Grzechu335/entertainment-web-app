@@ -40,8 +40,8 @@ export const useMovies = defineStore("movies", {
 				this.movies.isLoading = false;
 			}
 		},
-		async searchMovies(query: string) {
-			if (query.trim() === "") {
+		async searchMovies(query: string | undefined) {
+			if (typeof query === "undefined") {
 				this.searchedMovies.data = null;
 				return;
 			}

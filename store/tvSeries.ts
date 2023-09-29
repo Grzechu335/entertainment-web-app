@@ -40,8 +40,8 @@ export const useTVSeries = defineStore("tvSeries", {
 				this.TVSeries.isLoading = false;
 			}
 		},
-		async searchTVSeries(query: string) {
-			if (query.trim() === "") {
+		async searchTVSeries(query: string | undefined) {
+			if (typeof query === "undefined") {
 				this.searchedTVSeries.data = null;
 				return;
 			}

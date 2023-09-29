@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<LayoutSearchBar placeholder="Search for movies" v-model="input" />
 		<LayoutMovies
 			header="Movies"
 			:isLoading="moviesStore.getSearchedMovies.isLoading"
@@ -11,18 +10,21 @@
 </template>
 
 <script setup lang="ts">
-import { debounceTime } from "~/constants/constants";
 import { useMovies } from "~/store/movies";
-
-const input = ref("");
+const route = useRoute();
 const moviesStore = useMovies();
-moviesStore.fetchMovies();
 
-const searchMoviesByInput = useDebounce(() => {
-	moviesStore.searchMovies(input.value);
-}, debounceTime);
+const fetchMoviesFromQuery = () => {
+	const query = route.query.search as string | undefined;
+	moviesStore.searchMovies(query);
+};
 
-watch(input, () => {
-	searchMoviesByInput();
+// Fetch new data when query is changed
+watch(() => route.query.search, fetchMoviesFromQuery);
+
+// Fetch movies when route is changed
+onMounted(() => {
+	moviesStore.fetchMovies();
+	fetchMoviesFromQuery();
 });
 </script>

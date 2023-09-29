@@ -12,7 +12,7 @@ export const useHomeMovies = defineStore("homeMovies", {
 			isLoading: false,
 		},
 		searchedRecommendedMovies: {
-			data: null as Array<Movie | TVShow> | null,
+			data: [] as Array<Movie | TVShow> | null,
 			isLoading: false,
 		},
 	}),
@@ -47,9 +47,9 @@ export const useHomeMovies = defineStore("homeMovies", {
 				this.recommendedMovies.isLoading = false;
 			}
 		},
-		async searchRecommendedMovies(query: string) {
-			if (query.trim() === "") {
-				this.searchedRecommendedMovies.data = null;
+		async searchRecommendedMovies(query: string | undefined) {
+			if (typeof query === "undefined") {
+				// this.searchedRecommendedMovies.data = null;
 				return;
 			}
 			const config = useRuntimeConfig();

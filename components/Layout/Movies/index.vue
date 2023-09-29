@@ -4,9 +4,11 @@
 			<h1 class="relative heading-lg">
 				&#8205;
 				<Transition name="movieLayout">
-					<span class="absolute" v-if="searchedMovies === null">{{
-						header
-					}}</span>
+					<span
+						class="absolute"
+						v-if="typeof route.query.search === 'undefined'"
+						>{{ header }}</span
+					>
 					<span class="absolute" v-else>Searched</span>
 				</Transition>
 			</h1>
@@ -18,7 +20,7 @@
 			>
 				<Spinner />
 			</div>
-			<div v-else-if="searchedMovies === null">
+			<div v-else-if="typeof route.query.search === 'undefined'">
 				<div
 					class="grid grid-flow-row grid-cols-1 gap-4 tablet:gap-7 desktop:gap-10 tablet:grid-cols-3 desktop:grid-cols-4"
 				>
@@ -55,6 +57,8 @@ defineProps<{
 	header: string;
 	isLoading: boolean;
 }>();
+
+const route = useRoute();
 </script>
 
 <style scoped>

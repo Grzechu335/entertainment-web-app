@@ -1,9 +1,5 @@
 <template>
 	<div>
-		<LayoutSearchBar
-			placeholder="Search for movies or TV Series"
-			v-model="input"
-		/>
 		<div class="flex flex-col space-y-10">
 			<div class="space-y-6">
 				<h1 class="heading-lg">Trending</h1>
@@ -17,33 +13,36 @@
 					<MovieTrending
 						:key="movie.id"
 						:movie="movie"
-						v-for="movie in moviesStore.getTrendingMovies.data"
+						v-for="movie in homePageStore.getTrendingMovies.data"
 					/>
 				</VueMarquee>
 			</div>
 			<LayoutMovies
 				header="Recommended for you"
-				:is-loading="moviesStore.getSearchedRecommendedMovies.isLoading"
-				:movies="moviesStore.getRecommendedMovies.data"
-				:searchedMovies="moviesStore.getSearchedRecommendedMovies.data"
+				:is-loading="homePageStore.getSearchedRecommendedMovies.isLoading"
+				:movies="homePageStore.getRecommendedMovies.data"
+				:searchedMovies="homePageStore.getSearchedRecommendedMovies.data"
 			/>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { debounceTime } from "~/constants/constants";
 import { useHomeMovies } from "~/store/homeMovies";
-const moviesStore = useHomeMovies();
-moviesStore.fetchHomeMovies();
+const route = useRoute();
+const homePageStore = useHomeMovies();
 
-let input = ref("");
+const fetchHomeMoviesFromQuery = () => {
+	const query = route.query.search as string | undefined;
+	homePageStore.searchRecommendedMovies(query);
+};
 
-const searchRecommendedByInput: () => Promise<any> = useDebounce(() => {
-	moviesStore.searchRecommendedMovies(input.value);
-}, debounceTime);
+// Fetch new data when query is changed
+watch(() => route.query.search, fetchHomeMoviesFromQuery);
 
-watch(input, () => {
-	searchRecommendedByInput();
+// Fetch movies when route is changed
+onMounted(() => {
+	homePageStore.fetchHomeMovies();
+	fetchHomeMoviesFromQuery();
 });
 </script>
