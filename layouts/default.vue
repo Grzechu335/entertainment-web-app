@@ -21,7 +21,7 @@ const dynamicPlaceholder = ref("");
 
 // Function setting the placeholder value depending on the active route
 const setPlaceholder = () => {
-	if (route.path === "/tvseries") {
+	if (route.path === "/tvSeries") {
 		dynamicPlaceholder.value = "Search for TV Series";
 	} else if (route.path === "/movies") {
 		dynamicPlaceholder.value = "Search for movies";
@@ -52,14 +52,11 @@ onMounted(() => {
 	}
 });
 
-watch(route, () => {
-	setPlaceholder();
-});
-
 watch(
 	() => route.path,
 	() => {
 		setPath();
+		setPlaceholder();
 	}
 );
 
