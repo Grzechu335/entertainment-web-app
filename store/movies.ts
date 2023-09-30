@@ -17,6 +17,9 @@ export const useMovies = defineStore("movies", {
 		getSearchedMovies: (state) => state.searchedMovies,
 	},
 	actions: {
+		resetData() {
+			this.searchedMovies.data = [];
+		},
 		async fetchMovies() {
 			const config = useRuntimeConfig();
 			const movieUrl = "https://api.themoviedb.org/3/trending/movie/day?";

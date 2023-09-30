@@ -17,6 +17,9 @@ export const useTVSeries = defineStore("tvSeries", {
 		getSearchedTVSeries: (state) => state.searchedTVSeries,
 	},
 	actions: {
+		resetData() {
+			this.searchedTVSeries.data = [];
+		},
 		async fetchTVSeries() {
 			const config = useRuntimeConfig();
 			const tvSeriesUrl = "https://api.themoviedb.org/3/trending/tv/day?";
@@ -46,7 +49,7 @@ export const useTVSeries = defineStore("tvSeries", {
 				return;
 			}
 			const config = useRuntimeConfig();
-			const searchTVSeriesUrl = "https://api.themoviedb.org/3/search/multi";
+			const searchTVSeriesUrl = "https://api.themoviedb.org/3/search/tv";
 			try {
 				this.searchedTVSeries.isLoading = true;
 				const res = await $fetch<TVSeriesRes>(searchTVSeriesUrl, {

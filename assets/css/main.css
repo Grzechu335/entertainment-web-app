@@ -3,8 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+	html {
+		@apply w-full h-full;
+	}
 	body {
-		@apply overflow-x-hidden font-sans bg-dark-blue;
+		@apply w-full h-full overflow-hidden font-sans bg-dark-blue;
 	}
 }
 

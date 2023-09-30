@@ -12,8 +12,10 @@ export const useHomeMovies = defineStore("homeMovies", {
 			isLoading: false,
 		},
 		searchedRecommendedMovies: {
-			data: [] as Array<Movie | TVShow> | null,
+			data: [] as Array<Movie | TVShow>,
 			isLoading: false,
+			currentPage: 1,
+			totalPages: undefined as Number | undefined,
 		},
 	}),
 	getters: {
@@ -22,6 +24,11 @@ export const useHomeMovies = defineStore("homeMovies", {
 		getSearchedRecommendedMovies: (state) => state.searchedRecommendedMovies,
 	},
 	actions: {
+		resetData() {
+			this.searchedRecommendedMovies.data = [];
+			this.searchedRecommendedMovies.currentPage = 1;
+			this.searchedRecommendedMovies.totalPages = undefined;
+		},
 		async fetchHomeMovies() {
 			const config = useRuntimeConfig();
 			const trendingUrl = "https://api.themoviedb.org/3/trending/all/day?";
@@ -49,7 +56,6 @@ export const useHomeMovies = defineStore("homeMovies", {
 		},
 		async searchRecommendedMovies(query: string | undefined) {
 			if (typeof query === "undefined") {
-				// this.searchedRecommendedMovies.data = null;
 				return;
 			}
 			const config = useRuntimeConfig();
@@ -70,15 +76,60 @@ export const useHomeMovies = defineStore("homeMovies", {
 				});
 				if (res.total_results === 0) {
 					this.searchedRecommendedMovies.data = [];
+					this.searchedRecommendedMovies.totalPages = undefined;
 				} else {
 					this.searchedRecommendedMovies.data = res.results;
+					this.searchedRecommendedMovies.totalPages = res.total_pages;
 				}
 			} catch (error) {
 				console.error(
 					"Error while fetching searched home page movies: " + error
 				);
 			} finally {
-				this.searchedRecommendedMovies.isLoading = false;
+				setTimeout(() => {
+					this.searchedRecommendedMovies.isLoading = false;
+				}, 2000);
+			}
+		},
+		async addSearchedMovies(query: string | undefined) {
+			if (typeof query === "undefined") {
+				return;
+			}
+			const config = useRuntimeConfig();
+			const searchRecommendedUrl = "https://api.themoviedb.org/3/search/multi";
+			try {
+				this.searchedRecommendedMovies.isLoading = true;
+				++this.searchedRecommendedMovies.currentPage;
+				const res = await $fetch<CommonRes>(searchRecommendedUrl, {
+					method: "GET",
+					headers: {
+						accept: "application/json",
+					},
+					params: {
+						api_key: config.public.movieDbKey,
+						language: "en-US",
+						page: this.searchedRecommendedMovies.currentPage,
+						query,
+					},
+				});
+				if (res.total_results === 0) {
+					this.searchedRecommendedMovies.data = [];
+					this.searchedRecommendedMovies.totalPages = undefined;
+				} else {
+					this.searchedRecommendedMovies.data = [
+						...this.searchedRecommendedMovies.data,
+						...res.results,
+					];
+					this.searchedRecommendedMovies.totalPages = res.total_pages;
+				}
+			} catch (error) {
+				console.error(
+					"Error while fetching searched home page movies: " + error
+				);
+			} finally {
+				setTimeout(() => {
+					this.searchedRecommendedMovies.isLoading = false;
+				}, 1000);
 			}
 		},
 	},

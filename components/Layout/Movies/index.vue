@@ -1,5 +1,5 @@
 <template>
-	<div class="relative space-y-6 min-h-[400px]">
+	<div class="relative space-y-6">
 		<Transition>
 			<h1 class="relative heading-lg">
 				&#8205;
@@ -13,22 +13,16 @@
 				</Transition>
 			</h1>
 		</Transition>
-		<Transition name="movieLayout" mode="out-in">
+		<div v-if="typeof route.query.search === 'undefined'">
 			<div
-				v-if="isLoading"
-				class="absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]"
+				class="grid grid-flow-row grid-cols-1 gap-4 tablet:gap-7 desktop:gap-10 tablet:grid-cols-3 desktop:grid-cols-4"
 			>
-				<Spinner />
+				<Movie :movie="movie" v-for="movie in movies" />
 			</div>
-			<div v-else-if="typeof route.query.search === 'undefined'">
-				<div
-					class="grid grid-flow-row grid-cols-1 gap-4 tablet:gap-7 desktop:gap-10 tablet:grid-cols-3 desktop:grid-cols-4"
-				>
-					<Movie :movie="movie" v-for="movie in movies" />
-				</div>
-			</div>
+		</div>
+		<Transition name="movieLayout">
 			<div
-				v-else-if="searchedMovies?.length === 0"
+				v-if="searchedMovies?.length === 0"
 				class="absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]"
 			>
 				<p class="text-4xl font-bold text-white">Not found</p>
@@ -38,6 +32,9 @@
 				class="grid grid-flow-row grid-cols-1 gap-4 tablet:gap-7 desktop:gap-10 tablet:grid-cols-3 desktop:grid-cols-4"
 			>
 				<Movie :movie="movie" v-for="movie in searchedMovies" />
+				<div v-if="isLoading">
+					<Spinner />
+				</div>
 			</div>
 		</Transition>
 	</div>

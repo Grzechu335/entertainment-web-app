@@ -17,9 +17,7 @@
 		<NuxtLink class="cursor-pointer" :to="tvSeriesRoute"
 			><SvgoTVIcon
 				class="relative bottom-[1px] desktop:static w-[22px] h-[22px]"
-				:class="
-					$route.path === '/tvseries' ? 'text-white' : 'text-grayish-blue'
-				"
+				:class="$route.path === '/tv' ? 'text-white' : 'text-grayish-blue'"
 				:fontControlled="false"
 		/></NuxtLink>
 		<NuxtLink to="bookmarked">
@@ -45,7 +43,7 @@ let moviesRoute = ref<Partial<RouteLocationRaw>>({
 	path: "/movies",
 });
 let tvSeriesRoute = ref<Partial<RouteLocationRaw | undefined>>({
-	path: "/tvseries",
+	path: "/tv",
 });
 
 watch(
@@ -61,7 +59,7 @@ watch(
 			query: route.query,
 		};
 		tvSeriesRoute.value = {
-			path: "/tvSeries",
+			path: "/tv",
 			query: route.query,
 		};
 	}

@@ -2,19 +2,28 @@
 	<div>
 		<LayoutNav />
 		<main
-			class="desktop:pl-[164px] desktop:pt-8 desktop:pr-6 pt-[128px] px-6 pb-6 desktop:pb-8"
+			id="mainContainer"
+			class="desktop:pl-[164px] desktop:pt-8 desktop:pr-6 pt-[128px] px-6 pb-6 desktop:pb-8 overflow-y-scroll h-screen"
 		>
 			<LayoutSearchBar v-model="input" :placeholder="dynamicPlaceholder" />
-			<slot />
+			<div>
+				<slot />
+			</div>
 		</main>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { debounceTime } from "~/constants/constants";
+import { useHomeMovies } from "~/store/homeMovies";
+import { useMovies } from "~/store/movies";
+import { useTVSeries } from "~/store/tvSeries";
 
 const route = useRoute();
 const router = useRouter();
+const homeMoviesStore = useHomeMovies();
+const moviesStore = useMovies();
+const tvSeriesStore = useTVSeries();
 
 const input = ref("");
 const dynamicPlaceholder = ref("");
@@ -60,7 +69,12 @@ watch(
 	}
 );
 
-watch(input, () => {
+watch(input, (newVal) => {
 	setPath();
+	if (newVal.trim() === "") {
+		homeMoviesStore.resetData();
+		moviesStore.resetData();
+		tvSeriesStore.resetData();
+	}
 });
 </script>
