@@ -66,12 +66,15 @@ watch(
 	() => {
 		setPath();
 		setPlaceholder();
+		homeMoviesStore.resetData();
+		moviesStore.resetData();
+		tvSeriesStore.resetData();
 	}
 );
 
-watch(input, (newVal) => {
+watch(input, (newVal, oldVal) => {
 	setPath();
-	if (newVal.trim() === "") {
+	if (newVal.trim() === "" || newVal !== oldVal) {
 		homeMoviesStore.resetData();
 		moviesStore.resetData();
 		tvSeriesStore.resetData();

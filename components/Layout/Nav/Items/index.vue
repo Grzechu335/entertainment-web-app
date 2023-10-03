@@ -20,15 +20,6 @@
 				:class="$route.path === '/tv' ? 'text-white' : 'text-grayish-blue'"
 				:fontControlled="false"
 		/></NuxtLink>
-		<NuxtLink to="bookmarked">
-			<SvgoBookmarkIcon
-				class="relative top-1 desktop:static w-[30px] h-[30px]"
-				:class="
-					$route.path === '/bookmarked' ? '!text-white' : 'text-grayish-blue'
-				"
-				:fontControlled="false"
-			/>
-		</NuxtLink>
 	</div>
 </template>
 

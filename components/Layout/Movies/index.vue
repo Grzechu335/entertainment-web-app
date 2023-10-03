@@ -22,7 +22,7 @@
 		</div>
 		<Transition name="movieLayout">
 			<div
-				v-if="searchedMovies?.length === 0"
+				v-if="totalPages === 1 && searchedMovies?.length === 0"
 				class="absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]"
 			>
 				<p class="text-4xl font-bold text-white">Not found</p>
@@ -53,6 +53,7 @@ defineProps<{
 	searchedMovies: Array<SearchedMovie | SearchedTVShow> | null;
 	header: string;
 	isLoading: boolean;
+	totalPages: number | undefined;
 }>();
 
 const route = useRoute();

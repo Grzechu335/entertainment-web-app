@@ -1,8 +1,8 @@
 <template>
-	<div class="flex flex-col space-y-10" ref="containerRef">
+	<div class="flex flex-col space-y-10">
 		<div class="space-y-6">
 			<h1 class="heading-lg">Trending</h1>
-			<VueMarquee
+			<Vue3Marquee
 				:gradient="true"
 				gradient-length="20%"
 				:gradient-color="[16, 20, 30]"
@@ -14,18 +14,20 @@
 					:movie="movie"
 					v-for="movie in homePageStore.getTrendingMovies.data"
 				/>
-			</VueMarquee>
+			</Vue3Marquee>
 		</div>
 		<LayoutMovies
 			header="Recommended for you"
 			:is-loading="homePageStore.getSearchedRecommendedMovies.isLoading"
 			:movies="homePageStore.getRecommendedMovies.data"
 			:searchedMovies="homePageStore.getSearchedRecommendedMovies.data"
+			:total-pages="homePageStore.getSearchedRecommendedMovies.totalPages"
 		/>
 	</div>
 </template>
 
 <script setup lang="ts">
+import { Vue3Marquee } from "vue3-marquee";
 import { useHomeMovies } from "~/store/homeMovies";
 const route = useRoute();
 const homePageStore = useHomeMovies();
@@ -52,24 +54,19 @@ onMounted(() => {
 	fetchHomeMoviesFromQuery();
 });
 
-const containerRef = ref(null);
-
 useInfiniteScroll(
 	mainContainerRef,
 	() => {
 		// Check if there are more pages available
 		if (
-			typeof homePageStore.getSearchedRecommendedMovies.totalPages === "number"
-		)
-			if (
-				homePageStore.getSearchedRecommendedMovies.totalPages >
-				homePageStore.getSearchedRecommendedMovies.currentPage
-			) {
-				homePageStore.addSearchedMovies(route.query.search as string);
-			}
+			homePageStore.getSearchedRecommendedMovies.totalPages >
+			homePageStore.getSearchedRecommendedMovies.currentPage
+		) {
+			homePageStore.addSearchedMovies(route.query.search as string);
+		}
 	},
 	{
-		distance: 100,
+		distance: 200,
 	}
 );
 </script>

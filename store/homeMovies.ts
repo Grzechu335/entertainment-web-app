@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import { CommonRes, Movie, TVShow } from "~/types/Movie";
+import useMovieFetch from "~/hooks/useMovieFetch";
+import { Movie, TVShow } from "~/types/Movie";
 
 export const useHomeMovies = defineStore("homeMovies", {
 	state: () => ({
@@ -15,7 +16,7 @@ export const useHomeMovies = defineStore("homeMovies", {
 			data: [] as Array<Movie | TVShow>,
 			isLoading: false,
 			currentPage: 1,
-			totalPages: undefined as Number | undefined,
+			totalPages: 0,
 		},
 	}),
 	getters: {
@@ -27,110 +28,68 @@ export const useHomeMovies = defineStore("homeMovies", {
 		resetData() {
 			this.searchedRecommendedMovies.data = [];
 			this.searchedRecommendedMovies.currentPage = 1;
-			this.searchedRecommendedMovies.totalPages = undefined;
+			this.searchedRecommendedMovies.totalPages = 0;
 		},
 		async fetchHomeMovies() {
-			const config = useRuntimeConfig();
-			const trendingUrl = "https://api.themoviedb.org/3/trending/all/day?";
-			try {
-				this.trendingMovies.isLoading = true;
-				const res = await $fetch<CommonRes>(trendingUrl, {
-					method: "GET",
-					headers: {
-						accept: "application/json",
-					},
+			const { data, isLoading } = await useMovieFetch<Array<Movie | TVShow>>(
+				"https://api.themoviedb.org/3/trending/all/day?",
+				{
 					params: {
-						api_key: config.public.movieDbKey,
 						language: "en-US",
 						page: 1,
 					},
-				});
-				this.trendingMovies.data = res.results.slice(0, 5);
-				this.recommendedMovies.data = res.results;
-			} catch (error) {
-				console.error("Error while fetching trending movies: " + error);
-			} finally {
-				this.trendingMovies.isLoading = false;
-				this.recommendedMovies.isLoading = false;
-			}
+				}
+			);
+			this.trendingMovies.isLoading = isLoading.value;
+			this.recommendedMovies.isLoading = isLoading.value;
+
+			this.trendingMovies.data = data.value.slice(0, 5);
+			this.recommendedMovies.data = data.value;
 		},
 		async searchRecommendedMovies(query: string | undefined) {
 			if (typeof query === "undefined") {
 				return;
 			}
-			const config = useRuntimeConfig();
-			const searchRecommendedUrl = "https://api.themoviedb.org/3/search/multi";
-			try {
-				this.searchedRecommendedMovies.isLoading = true;
-				const res = await $fetch<CommonRes>(searchRecommendedUrl, {
-					method: "GET",
-					headers: {
-						accept: "application/json",
-					},
-					params: {
-						api_key: config.public.movieDbKey,
-						language: "en-US",
-						page: 1,
-						query,
-					},
-				});
-				if (res.total_results === 0) {
-					this.searchedRecommendedMovies.data = [];
-					this.searchedRecommendedMovies.totalPages = undefined;
-				} else {
-					this.searchedRecommendedMovies.data = res.results;
-					this.searchedRecommendedMovies.totalPages = res.total_pages;
-				}
-			} catch (error) {
-				console.error(
-					"Error while fetching searched home page movies: " + error
-				);
-			} finally {
-				setTimeout(() => {
-					this.searchedRecommendedMovies.isLoading = false;
-				}, 2000);
-			}
+			const { data, isLoading, totalPages } = await useMovieFetch<
+				Array<Movie | TVShow>
+			>("https://api.themoviedb.org/3/search/multi?", {
+				params: {
+					language: "en-US",
+					page: 1,
+					query,
+				},
+			});
+
+			this.searchedRecommendedMovies.data = data.value;
+			this.searchedRecommendedMovies.isLoading = isLoading.value;
+			this.searchedRecommendedMovies.totalPages = totalPages.value;
 		},
 		async addSearchedMovies(query: string | undefined) {
 			if (typeof query === "undefined") {
 				return;
 			}
-			const config = useRuntimeConfig();
-			const searchRecommendedUrl = "https://api.themoviedb.org/3/search/multi";
-			try {
-				this.searchedRecommendedMovies.isLoading = true;
-				++this.searchedRecommendedMovies.currentPage;
-				const res = await $fetch<CommonRes>(searchRecommendedUrl, {
-					method: "GET",
-					headers: {
-						accept: "application/json",
-					},
-					params: {
-						api_key: config.public.movieDbKey,
-						language: "en-US",
-						page: this.searchedRecommendedMovies.currentPage,
-						query,
-					},
-				});
-				if (res.total_results === 0) {
-					this.searchedRecommendedMovies.data = [];
-					this.searchedRecommendedMovies.totalPages = undefined;
-				} else {
-					this.searchedRecommendedMovies.data = [
-						...this.searchedRecommendedMovies.data,
-						...res.results,
-					];
-					this.searchedRecommendedMovies.totalPages = res.total_pages;
-				}
-			} catch (error) {
-				console.error(
-					"Error while fetching searched home page movies: " + error
-				);
-			} finally {
-				setTimeout(() => {
-					this.searchedRecommendedMovies.isLoading = false;
-				}, 1000);
+			if (
+				this.searchedRecommendedMovies.totalPages &&
+				this.searchedRecommendedMovies.currentPage >=
+					this.searchedRecommendedMovies.totalPages
+			) {
+				return;
 			}
+			const { data, isLoading, totalPages } = await useMovieFetch<
+				Array<Movie | TVShow>
+			>("https://api.themoviedb.org/3/search/multi?", {
+				params: {
+					language: "en-US",
+					page: ++this.searchedRecommendedMovies.currentPage,
+					query,
+				},
+			});
+			this.searchedRecommendedMovies.isLoading = isLoading.value;
+			this.searchedRecommendedMovies.totalPages = totalPages.value;
+			this.searchedRecommendedMovies.data = [
+				...this.searchedRecommendedMovies.data,
+				...data.value,
+			];
 		},
 	},
 });

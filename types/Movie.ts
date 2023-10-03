@@ -19,6 +19,13 @@ export type TVSeriesRes = {
 	total_results: number;
 };
 
+export type SearchedMovieRes = {
+	page: number;
+	results: Array<SearchedMovie>;
+	total_pages: number;
+	total_results: number;
+};
+
 export type CommonMovie = {
 	adult: boolean;
 	backdrop_path: string;
