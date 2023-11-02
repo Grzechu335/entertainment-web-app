@@ -31,7 +31,7 @@ export const useHomeMovies = defineStore("homeMovies", {
 			this.searchedRecommendedMovies.totalPages = 0;
 		},
 		async fetchHomeMovies() {
-			const { data, isLoading } = await useMovieFetch<Array<Movie | TVShow>>(
+			const { data, fetchData } = useMovieFetch<Array<Movie | TVShow>>(
 				"https://api.themoviedb.org/3/trending/all/day?",
 				{
 					params: {
@@ -40,17 +40,18 @@ export const useHomeMovies = defineStore("homeMovies", {
 					},
 				}
 			);
-			this.trendingMovies.isLoading = isLoading.value;
-			this.recommendedMovies.isLoading = isLoading.value;
 
+			this.trendingMovies.isLoading = true;
+			this.recommendedMovies.isLoading = true;
 			this.trendingMovies.data = data.value.slice(0, 5);
 			this.recommendedMovies.data = data.value;
+			await fetchData();
 		},
 		async searchRecommendedMovies(query: string | undefined) {
 			if (typeof query === "undefined") {
 				return;
 			}
-			const { data, isLoading, totalPages } = await useMovieFetch<
+			const { data, isLoading, totalPages, fetchData } = useMovieFetch<
 				Array<Movie | TVShow>
 			>("https://api.themoviedb.org/3/search/multi?", {
 				params: {
@@ -59,15 +60,16 @@ export const useHomeMovies = defineStore("homeMovies", {
 					query,
 				},
 			});
-
-			this.searchedRecommendedMovies.data = data.value;
 			this.searchedRecommendedMovies.isLoading = isLoading.value;
+			this.searchedRecommendedMovies.data = data.value;
 			this.searchedRecommendedMovies.totalPages = totalPages.value;
+			await fetchData();
 		},
 		async addSearchedMovies(query: string | undefined) {
 			if (typeof query === "undefined") {
 				return;
 			}
+
 			if (
 				this.searchedRecommendedMovies.totalPages &&
 				this.searchedRecommendedMovies.currentPage >=
@@ -75,7 +77,8 @@ export const useHomeMovies = defineStore("homeMovies", {
 			) {
 				return;
 			}
-			const { data, isLoading, totalPages } = await useMovieFetch<
+
+			const { data, isLoading, totalPages, fetchData } = useMovieFetch<
 				Array<Movie | TVShow>
 			>("https://api.themoviedb.org/3/search/multi?", {
 				params: {
@@ -84,8 +87,10 @@ export const useHomeMovies = defineStore("homeMovies", {
 					query,
 				},
 			});
+
 			this.searchedRecommendedMovies.isLoading = isLoading.value;
 			this.searchedRecommendedMovies.totalPages = totalPages.value;
+			await fetchData();
 			this.searchedRecommendedMovies.data = [
 				...this.searchedRecommendedMovies.data,
 				...data.value,

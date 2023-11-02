@@ -22,7 +22,7 @@
 		</div>
 		<Transition name="movieLayout">
 			<div
-				v-if="totalPages === 1 && searchedMovies?.length === 0"
+				v-if="notFound"
 				class="absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]"
 			>
 				<p class="text-4xl font-bold text-white">Not found</p>
@@ -32,7 +32,10 @@
 				class="grid grid-flow-row grid-cols-1 gap-4 tablet:gap-7 desktop:gap-10 tablet:grid-cols-3 desktop:grid-cols-4"
 			>
 				<Movie :movie="movie" v-for="movie in searchedMovies" />
-				<div v-if="isLoading">
+				<div
+					v-if="isLoading"
+					class="grid mt-6 col-span-full place-content-center"
+				>
 					<Spinner />
 				</div>
 			</div>
@@ -49,11 +52,11 @@ import type {
 } from "~/types/Movie";
 
 defineProps<{
-	movies: Array<Movie | TVShow> | null;
-	searchedMovies: Array<SearchedMovie | SearchedTVShow> | null;
+	movies: Array<Movie | TVShow> | undefined;
+	searchedMovies: Array<SearchedMovie | SearchedTVShow> | undefined;
 	header: string;
 	isLoading: boolean;
-	totalPages: number | undefined;
+	notFound: boolean;
 }>();
 
 const route = useRoute();

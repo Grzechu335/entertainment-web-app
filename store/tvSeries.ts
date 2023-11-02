@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import { SearchedTVShow, TVSeriesRes, TVShow } from "~/types/Movie";
+import useMovieFetch from "~/hooks/useMovieFetch";
+import { SearchedTVShow, TVShow } from "~/types/Movie";
 
 export const useTVSeries = defineStore("tvSeries", {
 	state: () => ({
@@ -10,6 +11,8 @@ export const useTVSeries = defineStore("tvSeries", {
 		searchedTVSeries: {
 			data: null as SearchedTVShow[] | null,
 			isLoading: false,
+			currentPage: 1,
+			totalPages: 0,
 		},
 	}),
 	getters: {
@@ -19,61 +22,68 @@ export const useTVSeries = defineStore("tvSeries", {
 	actions: {
 		resetData() {
 			this.searchedTVSeries.data = [];
+			this.searchedTVSeries.currentPage = 1;
+			this.searchedTVSeries.totalPages = 0;
 		},
 		async fetchTVSeries() {
-			const config = useRuntimeConfig();
 			const tvSeriesUrl = "https://api.themoviedb.org/3/trending/tv/day?";
-			try {
-				this.TVSeries.isLoading = true;
-				const res = await $fetch<TVSeriesRes>(tvSeriesUrl, {
-					method: "GET",
-					headers: {
-						accept: "application/json",
-					},
+			const { data, isLoading } = await useMovieFetch<Array<TVShow>>(
+				tvSeriesUrl,
+				{
 					params: {
-						api_key: config.public.movieDbKey,
 						language: "en-US",
 						page: 1,
 					},
-				});
-				this.TVSeries.data = res.results;
-			} catch (error) {
-				console.error("Error while fetching initial TV Series: " + error);
-			} finally {
-				this.TVSeries.isLoading = false;
-			}
+				}
+			);
+			this.TVSeries.isLoading = isLoading.value;
+			this.TVSeries.data = data.value;
 		},
 		async searchTVSeries(query: string | undefined) {
 			if (typeof query === "undefined") {
-				this.searchedTVSeries.data = null;
 				return;
 			}
-			const config = useRuntimeConfig();
+
 			const searchTVSeriesUrl = "https://api.themoviedb.org/3/search/tv";
-			try {
-				this.searchedTVSeries.isLoading = true;
-				const res = await $fetch<TVSeriesRes>(searchTVSeriesUrl, {
-					method: "GET",
-					headers: {
-						accept: "application/json",
-					},
-					params: {
-						api_key: config.public.movieDbKey,
-						language: "en-US",
-						page: 1,
-						query,
-					},
-				});
-				if (res.total_results === 0) {
-					this.searchedTVSeries.data = [];
-				} else {
-					this.searchedTVSeries.data = res.results;
-				}
-			} catch (error) {
-				console.error("Error while fetching searched TV series: " + error);
-			} finally {
-				this.searchedTVSeries.isLoading = false;
+
+			const { data, isLoading, totalPages } = await useMovieFetch<
+				Array<TVShow>
+			>(searchTVSeriesUrl, {
+				params: {
+					language: "en-US",
+					page: 1,
+					query,
+				},
+			});
+
+			this.searchedTVSeries.isLoading = isLoading.value;
+			this.searchedTVSeries.data = data.value;
+			this.searchedTVSeries.totalPages = totalPages.value;
+		},
+		async addTVSeries(query: string | undefined) {
+			if (typeof query === "undefined") {
+				return;
 			}
+			if (
+				this.searchedTVSeries.totalPages &&
+				this.searchedTVSeries.currentPage >= this.searchedTVSeries.totalPages
+			) {
+				return;
+			}
+			const searchTVSeriesUrl = "https://api.themoviedb.org/3/search/tv";
+
+			const { data, isLoading, totalPages } = await useMovieFetch<
+				Array<TVShow>
+			>(searchTVSeriesUrl, {
+				params: {
+					language: "en-US",
+					page: ++this.searchedTVSeries.currentPage,
+					query,
+				},
+			});
+			this.searchedTVSeries.isLoading = isLoading.value;
+			this.searchedTVSeries.totalPages = totalPages.value;
+			this.searchedTVSeries.data?.push(...data.value);
 		},
 	},
 });
