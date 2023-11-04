@@ -15,15 +15,9 @@
 
 <script setup lang="ts">
 import { debounceTime } from "~/constants/constants";
-import { useHomeMovies } from "~/store/homeMovies";
-import { useMovies } from "~/store/movies";
-import { useTVSeries } from "~/store/tvSeries";
 
 const route = useRoute();
 const router = useRouter();
-const homeMoviesStore = useHomeMovies();
-const moviesStore = useMovies();
-const tvSeriesStore = useTVSeries();
 
 const input = ref("");
 const dynamicPlaceholder = ref("");
@@ -66,18 +60,10 @@ watch(
 	() => {
 		setPath();
 		setPlaceholder();
-		homeMoviesStore.resetData();
-		moviesStore.resetData();
-		tvSeriesStore.resetData();
 	}
 );
 
-watch(input, (newVal, oldVal) => {
+watch(input, () => {
 	setPath();
-	if (newVal.trim() === "" || newVal !== oldVal) {
-		homeMoviesStore.resetData();
-		moviesStore.resetData();
-		tvSeriesStore.resetData();
-	}
 });
 </script>

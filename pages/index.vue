@@ -21,9 +21,7 @@
 			:is-loading="fetchStatus === 'fetching'"
 			:movies="recommendedMovies?.results"
 			:searchedMovies="searchedMovies"
-			:not-found="
-				allSearchedMovies?.pages.slice(-1).pop()?.results.length === 0
-			"
+			:not-found="allSearchedMovies?.pages.slice(-1).pop()?.total_results === 0"
 		/>
 	</div>
 </template>

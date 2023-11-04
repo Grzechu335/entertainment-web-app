@@ -9,7 +9,7 @@
 		<input
 			type="text"
 			:placeholder="placeholder"
-			class="bg-transparent heading-md w-full active:text-white py-4 text-white/50 focus:outline-none caret-red focus:border-b-[1px] focus:border-b-grayish-blue"
+			class="bg-transparent rounded-none heading-md w-full active:text-white py-4 text-white/50 focus:outline-none caret-red focus:border-b-[1px] focus:border-b-grayish-blue"
 			:value="modelValue"
 			@input="
 				$emit('update:modelValue', ($event.target as HTMLInputElement).value)
