@@ -109,7 +109,7 @@ onMounted(() => {
 useInfiniteScroll(
 	mainContainerRef,
 	() => {
-		if (route.query.search && hasNextPage) {
+		if (route.query.search && hasNextPage && fetchStatus.value !== "fetching") {
 			fetchNextSearchedTVSeries();
 		}
 	},

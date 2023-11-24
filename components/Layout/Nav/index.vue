@@ -29,7 +29,6 @@ const showBorder = ref(false);
 const setBorderOnScroll = (e: Event) => {
 	const scrollThreshold = 100;
 	if (mainContainerRef && mainContainerRef.value) {
-		console.log(showBorder.value);
 		mainContainerRef?.value?.scrollTop > scrollThreshold
 			? (showBorder.value = true)
 			: (showBorder.value = false);

@@ -22,11 +22,12 @@
 				</div>
 			</div>
 			<Transition name="movieLayout">
-				<div
-					v-if="notFound"
-					class="absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]"
-				>
-					<p class="text-4xl font-bold text-white">Not found</p>
+				<div v-if="notFound">
+					<p
+						class="absolute text-2xl font-bold text-center text-white tablet:text-4xl"
+					>
+						Not found
+					</p>
 				</div>
 				<div
 					v-else
